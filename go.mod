@@ -1,4 +1,4 @@
-module multivac.network/auth
+module github.com/mvac-studio/multivac-network-auth
 
 go 1.21.0
 
