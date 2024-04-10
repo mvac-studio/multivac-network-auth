@@ -1,5 +1,10 @@
 package mvac
 
+import (
+	"context"
+	"strings"
+)
+
 type UserContext struct {
 	Iss         string   `json:"iss"`
 	Sub         string   `json:"sub"`
@@ -9,4 +14,27 @@ type UserContext struct {
 	Scope       string   `json:"scope"`
 	Azp         string   `json:"azp"`
 	Permissions []string `json:"permissions"`
+}
+
+func WithAuth(ctx context.Context) *UserContext {
+	user := ctx.Value("user").(*UserContext)
+	return user
+}
+
+func (u *UserContext) HasPermission(permission string) bool {
+	for _, p := range u.Permissions {
+		if p == permission {
+			return true
+		}
+	}
+	return false
+}
+
+func (u *UserContext) HasScope(scope string) bool {
+	return u.Scope == scope
+}
+
+func (u *UserContext) UserId() string {
+	splits := strings.Split(u.Sub, "|")[1]
+	return splits[:len(splits)-1]
 }
