@@ -19,7 +19,7 @@ type UserContext struct {
 
 func WithAuth(ctx context.Context) *UserContext {
 	user := ctx.Value("user").(*UserContext)
-	user.Raw = ctx.Value("RawToken").(string)
+	user.Raw = ctx.Value("token").(string)
 	return user
 }
 
