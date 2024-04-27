@@ -6,14 +6,13 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"strings"
 )
 
 func UserMiddleware() mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			authorizationHeader := r.Header.Get("authorization")
-			token := strings.Split(authorizationHeader, " ")[1]
+			token := r.Header.Get("authorization")
+
 			userHeader := r.Header.Get("user")
 			user := &UserContext{}
 			err := json.Unmarshal([]byte(userHeader), user)
