@@ -6,11 +6,14 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func UserMiddleware() mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			authorizationHeader := r.Header.Get("Authorization")
+			token := strings.Split(authorizationHeader, " ")[1]
 			userHeader := r.Header.Get("User")
 			user := &UserContext{}
 			err := json.Unmarshal([]byte(userHeader), user)
@@ -18,6 +21,7 @@ func UserMiddleware() mux.MiddlewareFunc {
 				log.Println(err)
 			}
 			ctx := context.WithValue(r.Context(), "user", user)
+			ctx = context.WithValue(ctx, "RawToken", token)
 			r = r.WithContext(ctx)
 			next.ServeHTTP(w, r)
 		})

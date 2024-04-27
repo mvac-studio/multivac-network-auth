@@ -14,10 +14,12 @@ type UserContext struct {
 	Scope       string   `json:"scope"`
 	Azp         string   `json:"azp"`
 	Permissions []string `json:"permissions"`
+	Raw         string   `json:"raw"`
 }
 
 func WithAuth(ctx context.Context) *UserContext {
 	user := ctx.Value("user").(*UserContext)
+	user.Raw = ctx.Value("RawToken").(string)
 	return user
 }
 
